@@ -7,43 +7,18 @@ import pandas as pd     # pandas is for preprossing the CSV files and converting
 import matplotlib.pyplot as plt  # matplotlib is for visualising the data
 import seaborn as sns
 
-import os
-print(os.listdir())
-
-import warnings
-warnings.filterwarnings('ignore')
-import json
 
 
 
 
 app = Flask(__name__)
-CORS(app)
 api=Api(app)
 
 
 
-dataset = pd.read_csv("heart.csv") # importing the dataset heart.csv
 
 from sklearn.model_selection import train_test_split
 
-predictors = dataset.drop("target",axis=1)
-target = dataset["target"]
-
-X_train,X_test,Y_train,Y_test = train_test_split(predictors,target,test_size=0.20,random_state=0)
-
-from sklearn.metrics import accuracy_score
-from sklearn.linear_model import LogisticRegression
-
-lr = LogisticRegression()
-
-lr.fit(X_train,Y_train)
-
-Y_pred_lr = lr.predict(X_test)
-
-score_lr = round(accuracy_score(Y_pred_lr,Y_test)*100,2)
-
-print("The accuracy score achieved using Logistic Regression is: "+str(score_lr)+" %")
 
 
 
@@ -54,17 +29,8 @@ class Predict(Resource):
     def get(self):
         return "hello!!!"
 
-class PredictOutput(Resource):
-    def get(self,age,sex,cp,trestbps,chol,fbs,restecg,thalach,exang,oldpeak,slope,ca,thal):
-        temp={'age':[age],'sex':[sex],'cp':[cp],'trestbps':[trestbps],'chol':[chol],'fbs':[fbs],'restecg':[restecg],'thalach':[thalach],'exang':[exang],'oldpeak':[oldpeak],'slope':[slope],'ca':[ca],'thal':[thal]}
-        print(temp)
-        ans = pd.DataFrame(data=temp)
-        clasify=lr.predict(ans)
-        print(clasify)
-        return str(clasify)
-
 api.add_resource(Predict,'/predict')
-api.add_resource(PredictOutput,'/predictoutput/<int:age>,<int:sex>,<int:cp>,<int:trestbps>,<int:chol>,<int:fbs>,<int:restecg>,<int:thalach>,<int:exang>,<int:oldpeak>,<int:slope>,<int:ca>,<int:thal>')
+
 
 
 
